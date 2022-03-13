@@ -27,15 +27,56 @@ void processInput(GLFWwindow* window, GLuint* size, int* myKeys);
 // give the coordinates of the vertices of a triangle
 GLfloat vertices[] =
 { //			coordinates	   /				colors				//
-	-1.0f,	 1.0f,		0.0f,	0.3f,	0.0f,	1.0f,	// lower left corner
-	 1.0f,	 1.0f,		0.0f,	0.9f,	0.1f,	0.9f,	// lower right corner
-	-1.0f,	-1.0f,		0.0f,	0.9f,	0.1f,	0.9f,	// upper corner
-	 1.0f, -1.0f,		0.0f,	0.9f,	0.1f,	0.9f	// inner left
+	-0.5f,	 0.5f,		-0.5f,	0.3f,	0.0f,	1.0f,	// lower left corner
+	 0.5f,	 0.5f,		-0.5f,	0.9f,	0.1f,	0.9f,	// lower right corner
+	-0.5f,	-0.5f,		-0.5f,	0.9f,	0.1f,	0.9f,	// upper corner
+	 0.5f,  -0.5f,		-0.5f,	0.9f,	0.1f,	0.9f,	// inner left
+	
+    -0.5f,	 0.5f,		0.5f,	0.9f,	0.9f,	1.0f,	// lower left corner
+	 0.5f,	 0.5f,		0.5f,	0.9f,	0.1f,	0.9f,	// lower right corner
+	-0.5f,	-0.5f,		0.5f,	0.9f,	0.1f,	0.9f,	// upper corner
+	 0.5f,  -0.5f,		0.5f,	0.9f,	0.1f,	0.9f,	// inner left
+
+	 0.5f,	-0.5f,		-0.5f,	0.9f,	0.9f,	1.0f,	// lower left corner
+	 0.5f,	-0.5f,		0.5f,	0.9f,	0.1f,	0.9f,	// lower right corner
+	 0.5f,	 0.5f,		0.5f,	0.9f,	0.1f,	0.9f,	// upper corner
+	 0.5f,   0.5f,		-0.5f,	0.9f,	0.1f,	0.9f	// inner left
+
+	- 0.5f,	 0.5f,		0.0f,	0.9f,	0.9f,	1.0f,	// lower left corner
+	 0.5f,	 0.5f,		0.0f,	0.9f,	0.1f,	0.9f,	// lower right corner
+	-0.5f,	-0.5f,		0.0f,	0.9f,	0.1f,	0.9f,	// upper corner
+	 0.5f,  -0.5f,		0.0f,	0.9f,	0.1f,	0.9f	// inner left
+
+	- 0.5f,	 0.5f,		0.0f,	0.9f,	0.9f,	1.0f,	// lower left corner
+	 0.5f,	 0.5f,		0.0f,	0.9f,	0.1f,	0.9f,	// lower right corner
+	-0.5f,	-0.5f,		0.0f,	0.9f,	0.1f,	0.9f,	// upper corner
+	 0.5f,  -0.5f,		0.0f,	0.9f,	0.1f,	0.9f	// inner left
+
+	- 0.5f,	 0.5f,		0.0f,	0.9f,	0.9f,	1.0f,	// lower left corner
+	 0.5f,	 0.5f,		0.0f,	0.9f,	0.1f,	0.9f,	// lower right corner
+	-0.5f,	-0.5f,		0.0f,	0.9f,	0.1f,	0.9f,	// upper corner
+	 0.5f,  -0.5f,		0.0f,	0.9f,	0.1f,	0.9f	// inner left
+
 };
 
 // indicated with vertices to use to create the square
 GLuint indices[] =
 {
+	0,1,2, // lower left triangle
+	2,1,3, // lower right triangle
+
+	4,5,6, // lower left triangle
+	6,5,7, // lower right triangle
+	
+	0,1,2, // lower left triangle
+	2,1,3, // lower right triangle
+
+	0,1,2, // lower left triangle
+	2,1,3, // lower right triangle
+
+	0,1,2, // lower left triangle
+	2,1,3, // lower right triangle
+
 	0,1,2, // lower left triangle
 	2,1,3, // lower right triangle
 };
@@ -109,6 +150,16 @@ int main()
 	// uniform for changing color
 	GLuint cID = glGetUniformLocation(shaderProgram.ID, "myColor");
 
+	// uniforms for 3D
+	GLuint modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+	
+	GLuint viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+	GLuint projLoc = glGetUniformLocation(shaderProgram.ID, "projection");
+	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
 	// temp variables for uniforms
 	float x = 0; // width
 	float y = 0; // height
@@ -125,7 +176,7 @@ int main()
 	};
 
 	// setting initial color
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 
@@ -138,8 +189,14 @@ int main()
 		int col = size[1];
 
 		// clear the color buffer
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		// start the shader program
 		shaderProgram.Start();
@@ -152,26 +209,29 @@ int main()
 
 		// update the color
 		glUniform1f(cID, 1);
-		c += 0.001f;
+		c = 0.001f;
 
 		// set the width and height for the squares
 		// in case the sizes are new
 		float w = 2.0f / static_cast<float>(col);
 		float h = 2.0f / static_cast<float>(row);
 
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		glUniform1f(mxID, x);
+		glUniform1f(myID, y);
 
-		for (int i = 0; i <= row*col ; i++) {
+		//for (int i = 0; i <= row*col ; i++) {
 
-			if (i % col == 0 && i != 0) {
-				x = 0.0f;
-				y += h;
-			}
-			glUniform1f(cID, tan(c+i));
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-			glUniform1f(mxID, x);
-			glUniform1f(myID, y);
-			x += w;			
-		}
+		//	if (i % col == 0 && i != 0) {
+		//		x = 0.0f;
+		//		y += h;
+		//	}
+		//	glUniform1f(cID, tan(c+i));
+		//	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//	glUniform1f(mxID, x);
+		//	glUniform1f(myID, y);
+		//	x += w;			
+		//}
 
         glfwSwapBuffers(window);
         glfwPollEvents();
