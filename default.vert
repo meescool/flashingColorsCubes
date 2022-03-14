@@ -14,7 +14,7 @@ uniform float myColor;
 
 void main()
 {
-	gl_Position = projection * view * model * vec4(aPos.x + moveX, aPos.y - moveY, aPos.z, 1.0);
+	gl_Position = projection * view * model * vec4(aPos.x * moveX, aPos.y + moveY, aPos.z * moveX, 1.0f);
 
-   color = aColor + myColor;
+   color = aColor + (myColor *0);
 }

@@ -1,11 +1,9 @@
 /*
 * @author	Marcela Estrada
-* @desc		This program is a graphical representation of a cube grid,
-*			it allows the user to define how many divisions the grid should 
-*			have by pressing on the UP key to increase or the DOWN key to
-*			decrease.
+* @desc		A computer animation of rectangular cubes stacked in the form of a pyramid
 * @source	I followed tutorials from https://learnopengl.com/ 
 */
+
 #include <iostream>
 #include <glad/glad.h>  // this needs to go before GLFW
 #include <GLFW/glfw3.h>
@@ -27,10 +25,10 @@ void processInput(GLFWwindow* window, GLuint* size, int* myKeys);
 // give the coordinates of the vertices of a triangle
 GLfloat vertices[] =
 { //			coordinates	   /				colors				//
-	-0.5f,	 0.5f,		-0.5f,	0.3f,	0.0f,	1.0f,	// lower left corner
-	 0.5f,	 0.5f,		-0.5f,	0.9f,	0.1f,	0.9f,	// lower right corner
-	-0.5f,	-0.5f,		-0.5f,	0.9f,	0.1f,	0.9f,	// upper corner
-	 0.5f,  -0.5f,		-0.5f,	0.9f,	0.1f,	0.9f,	// inner left
+	-0.5f,	 0.5f,		-0.5f,	0.3f,	0.0f,	0.2f,	// lower left corner
+	 0.5f,	 0.5f,		-0.5f,	0.0f,	0.1f,	0.2f,	// lower right corner
+	-0.5f,	-0.5f,		-0.5f,	0.2f,	0.1f,	0.2f,	// upper corner
+	 0.5f,  -0.5f,		-0.5f,	0.2f,	0.1f,	0.2f,	// inner left
 	
     -0.5f,	 0.5f,		0.5f,	0.9f,	0.9f,	1.0f,	// lower left corner
 	 0.5f,	 0.5f,		0.5f,	0.9f,	0.1f,	0.9f,	// lower right corner
@@ -39,46 +37,27 @@ GLfloat vertices[] =
 
 	 0.5f,	-0.5f,		-0.5f,	0.9f,	0.9f,	1.0f,	// lower left corner
 	 0.5f,	-0.5f,		0.5f,	0.9f,	0.1f,	0.9f,	// lower right corner
-	 0.5f,	 0.5f,		0.5f,	0.9f,	0.1f,	0.9f,	// upper corner
-	 0.5f,   0.5f,		-0.5f,	0.9f,	0.1f,	0.9f	// inner left
-
-	- 0.5f,	 0.5f,		0.0f,	0.9f,	0.9f,	1.0f,	// lower left corner
-	 0.5f,	 0.5f,		0.0f,	0.9f,	0.1f,	0.9f,	// lower right corner
-	-0.5f,	-0.5f,		0.0f,	0.9f,	0.1f,	0.9f,	// upper corner
-	 0.5f,  -0.5f,		0.0f,	0.9f,	0.1f,	0.9f	// inner left
-
-	- 0.5f,	 0.5f,		0.0f,	0.9f,	0.9f,	1.0f,	// lower left corner
-	 0.5f,	 0.5f,		0.0f,	0.9f,	0.1f,	0.9f,	// lower right corner
-	-0.5f,	-0.5f,		0.0f,	0.9f,	0.1f,	0.9f,	// upper corner
-	 0.5f,  -0.5f,		0.0f,	0.9f,	0.1f,	0.9f	// inner left
-
-	- 0.5f,	 0.5f,		0.0f,	0.9f,	0.9f,	1.0f,	// lower left corner
-	 0.5f,	 0.5f,		0.0f,	0.9f,	0.1f,	0.9f,	// lower right corner
-	-0.5f,	-0.5f,		0.0f,	0.9f,	0.1f,	0.9f,	// upper corner
-	 0.5f,  -0.5f,		0.0f,	0.9f,	0.1f,	0.9f	// inner left
+	 0.5f,	 0.5f,		-0.5f,	0.9f,	0.1f,	0.9f,	// upper corner
+	 0.5f,   0.5f,		0.5f,	0.9f,	0.1f,	0.9f,	// inner left
 
 };
 
 // indicated with vertices to use to create the square
 GLuint indices[] =
 {
-	0,1,2, // lower left triangle
-	2,1,3, // lower right triangle
+	0, 2, 3, 
+	0, 3, 1,
+	2, 6, 7, 
+	2, 7, 3,
+	6, 4, 5, 
+	6, 5, 7,
+	4, 0, 1, 
+	4, 1, 5,
+	0, 4, 6, 
+	0, 6, 2,
+	1, 5, 7, 
+	1, 7, 3,
 
-	4,5,6, // lower left triangle
-	6,5,7, // lower right triangle
-	
-	0,1,2, // lower left triangle
-	2,1,3, // lower right triangle
-
-	0,1,2, // lower left triangle
-	2,1,3, // lower right triangle
-
-	0,1,2, // lower left triangle
-	2,1,3, // lower right triangle
-
-	0,1,2, // lower left triangle
-	2,1,3, // lower right triangle
 };
 
 int main()
@@ -114,10 +93,10 @@ int main()
 	// setting up 3D 
 	// setting up model matrix
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 	// setting up view matrix
 	glm::mat4 view = glm::mat4(1.0f);
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -15.0f));
 	// setting up projection matrix
 	glm::mat4 projection;
 	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
@@ -143,6 +122,18 @@ int main()
 	VBO1.Unbind();
 	EBO1.Unbind();
 
+	// set positions for cubes 
+	glm::vec3 cubePos[] = {
+			glm::vec3(-1.0f, -2.0f, -3.0f),
+			glm::vec3(-1.0f, -1.0f, -3.0f),
+			glm::vec3(-1.0f,  0.0f, -3.0f),
+			glm::vec3(-1.0f,  1.0f, -3.0f),
+			glm::vec3(-1.0f,  2.0f, -3.0f),
+			glm::vec3(-1.0f,  3.0f, -3.0f),
+	};
+
+
+
 	// uniforms for creating new squares
 	GLuint mxID = glGetUniformLocation(shaderProgram.ID, "moveX");
 	GLuint myID = glGetUniformLocation(shaderProgram.ID, "moveY");
@@ -164,7 +155,10 @@ int main()
 	float x = 0; // width
 	float y = 0; // height
 	float c = 0; // color
-
+	float time = 0;
+	GLuint counter = 0;
+	float angle = 0.0f;
+	GLboolean rewind = false;
 	// sizes of the squares
 	GLuint size[2] = { 1,1 };
 	// up,down,left,right
@@ -175,13 +169,36 @@ int main()
 		false
 	};
 
-	// setting initial color
-	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glEnable(GL_DEPTH_TEST);
 
+	// setting initial color
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     while (!glfwWindowShouldClose(window))
     {
+		if (time >= 200.0f) 
+		{
+			time = 0.1f;
+			if (rewind == true) {
+				counter--;
+				if (counter == 0) {
+					rewind = false;
+				}
+			}
+			else {
+				counter++;
+
+			}
+			std::cout << "counter " << counter << std::endl;
+		}
+
+		if (counter > 4){
+			rewind = true;
+		}
+
+		time += 0.1f;
+
 		processInput(window, size, myKeys);
 
 		// rows and columns to new sizes incase the user presses UP/DOWN keys
@@ -189,8 +206,8 @@ int main()
 		int col = size[1];
 
 		// clear the color buffer
-        glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -209,16 +226,61 @@ int main()
 
 		// update the color
 		glUniform1f(cID, 1);
-		c = 0.001f;
+		c += 0.001f;
 
 		// set the width and height for the squares
 		// in case the sizes are new
-		float w = 2.0f / static_cast<float>(col);
-		float h = 2.0f / static_cast<float>(row);
+		float w = 3/static_cast<float>(col);
+		float h = 3/static_cast<float>(row);
 
-		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-		glUniform1f(mxID, x);
-		glUniform1f(myID, y);
+		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		//glUniform1f(mxID, x);
+		//glUniform1f(myID, y);
+		
+		for (GLuint i = 0; i < 6; i++)
+		{
+			x = i;
+			glm::mat4 newmodel = glm::mat4(1.0f);
+			glm::vec3 tempCube = cubePos[i] + glm::vec3(cos((c/2 )* 1.4f));
+			newmodel = glm::translate(newmodel, tempCube);
+			if (i == counter) {
+				angle = 0.04f * time;
+				newmodel = glm::translate(newmodel, glm::vec3(sin(time*0.1f) + 2.0f, 0.0f, 0.0f));
+			}
+			if (((i == counter-1) && i >=0) || ((i == counter + 1) && i <= 5)) {
+				angle = 0.035f * time;
+				newmodel = glm::translate(newmodel, glm::vec3(sin(time * 0.1f) + 1.0f, 0.0f, 0.0f));
+
+			}
+			if (((i == counter - 2) && i >= 0) || ((i == counter + 2) && i <= 5)) {
+				angle = 0.03f * time;
+				newmodel = glm::translate(newmodel, glm::vec3(sin(time * 0.1f), 0.0f, 0.0f));
+			}
+
+			if (((i == counter - 3) && i >= 0) || ((i == counter + 3) && i <= 5)) {
+				angle = 0.025f * time;
+			}
+
+			if (((i == counter - 4) && i >= 0) || ((i == counter + 4) && i <= 5)) {
+				angle = 0.02f * time;
+			}
+
+			if (((i == counter - 5) && i >= 0) || ((i == counter + 5) && i <= 5)) {
+				angle = 0.015f * time;
+			}
+
+			newmodel = glm::rotate(newmodel, (float)glfwGetTime() * glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(newmodel));
+			glUniform1f(mxID, x);
+			glUniform1f(myID, y);
+			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+			
+
+		}
+
+
+
 
 		//for (int i = 0; i <= row*col ; i++) {
 
@@ -227,7 +289,7 @@ int main()
 		//		y += h;
 		//	}
 		//	glUniform1f(cID, tan(c+i));
-		//	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 		//	glUniform1f(mxID, x);
 		//	glUniform1f(myID, y);
 		//	x += w;			
