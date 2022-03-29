@@ -206,7 +206,7 @@ int main()
 		int col = size[1];
 
 		// clear the color buffer
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -225,7 +225,7 @@ int main()
 		y = 0.0f;
 
 		// update the color
-		glUniform1f(cID, 1);
+		//glUniform1f(cID, sin(c));
 		c += 0.001f;
 
 		// set the width and height for the squares
@@ -274,6 +274,7 @@ int main()
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(newmodel));
 			glUniform1f(mxID, x);
 			glUniform1f(myID, y);
+			glUniform1f(cID, cos((c+i)));
 			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 			
 
